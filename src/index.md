@@ -11,7 +11,8 @@ import { bumpChart } from "./components/bumpChart.js";
 import { createSpotifyBumpChart } from "./components/spotifyDataLoader.js";
 
 // our sample dataset. gottq switch it out
-const data = FileAttachment("./data/spotify_rankings_sample.json").json();
+const data = FileAttachment("./data/spotify_top50.csv").csv({ typed: true });
+console.log(data);
 ```
 
 <div class="hero">
@@ -25,13 +26,28 @@ This visualization shows how the top songs on Spotify change over the course of 
 
 ```js
 display(
-	bumpChart(data, {
-		width: window.innerWidth - 20, // Adjust width to take up as much horizontal space as possible
-		height: 700,
-		margin: { left: 20, right: 200, top: 40, bottom: 80 }, // Reduce margins for better centering
-		trackCount: 10,
-		drawingStyle: "transit",
-		labelStyle: "right",
+	(() => {
+		// Reference the selectedQuarter to establish dependency
+		const quarter = selectedQuarter;
+
+		return bumpChart(data, {
+			width: window.innerWidth - 20,
+			height: 800,
+			margin: { left: 280, right: 0, top: 40, bottom: 80 },
+			trackCount: 20,
+			quarter: quarter, // Use the local variable
+			drawingStyle: "transit",
+			labelStyle: "left",
+		});
+	})()
+);
+```
+
+```js
+const selectedQuarter = view(
+	Inputs.radio([1, 2, 3, 4], {
+		label: "Select which quarter to view:",
+		value: 1,
 	})
 );
 ```

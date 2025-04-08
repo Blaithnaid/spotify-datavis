@@ -1,0 +1,427 @@
+[
+	{
+		"week": "2025-03-01",
+		"track_name": "Blinding Lights",
+		"artist_names": "The Weeknd",
+		"rank": 1,
+		"streams": 5428750
+	},
+	{
+		"week": "2025-03-01",
+		"track_name": "Shape of You",
+		"artist_names": "Ed Sheeran",
+		"rank": 2,
+		"streams": 4982341
+	},
+	{
+		"week": "2025-03-01",
+		"track_name": "Someone You Loved",
+		"artist_names": "Lewis Capaldi",
+		"rank": 3,
+		"streams": 4756123
+	},
+	{
+		"week": "2025-03-01",
+		"track_name": "Dance Monkey",
+		"artist_names": "Tones and I",
+		"rank": 4,
+		"streams": 4531987
+	},
+	{
+		"week": "2025-03-01",
+		"track_name": "Starboy",
+		"artist_names": "The Weeknd",
+		"rank": 5,
+		"streams": 4321456
+	},
+	{
+		"week": "2025-03-01",
+		"track_name": "Bad Guy",
+		"artist_names": "Billie Eilish",
+		"rank": 6,
+		"streams": 4102345
+	},
+	{
+		"week": "2025-03-01",
+		"track_name": "Stay",
+		"artist_names": "The Kid LAROI, Justin Bieber",
+		"rank": 7,
+		"streams": 3987623
+	},
+	{
+		"week": "2025-03-01",
+		"track_name": "Heat Waves",
+		"artist_names": "Glass Animals",
+		"rank": 8,
+		"streams": 3765421
+	},
+	{
+		"week": "2025-03-01",
+		"track_name": "Levitating",
+		"artist_names": "Dua Lipa",
+		"rank": 9,
+		"streams": 3654789
+	},
+	{
+		"week": "2025-03-01",
+		"track_name": "Good 4 U",
+		"artist_names": "Olivia Rodrigo",
+		"rank": 10,
+		"streams": 3543267
+	},
+
+	{
+		"week": "2025-03-08",
+		"track_name": "Blinding Lights",
+		"artist_names": "The Weeknd",
+		"rank": 3,
+		"streams": 5012385
+	},
+	{
+		"week": "2025-03-08",
+		"track_name": "Shape of You",
+		"artist_names": "Ed Sheeran",
+		"rank": 5,
+		"streams": 4512765
+	},
+	{
+		"week": "2025-03-08",
+		"track_name": "Someone You Loved",
+		"artist_names": "Lewis Capaldi",
+		"rank": 6,
+		"streams": 4423651
+	},
+	{
+		"week": "2025-03-08",
+		"track_name": "Dance Monkey",
+		"artist_names": "Tones and I",
+		"rank": 8,
+		"streams": 4123456
+	},
+	{
+		"week": "2025-03-08",
+		"track_name": "Starboy",
+		"artist_names": "The Weeknd",
+		"rank": 7,
+		"streams": 4234567
+	},
+	{
+		"week": "2025-03-08",
+		"track_name": "Bad Guy",
+		"artist_names": "Billie Eilish",
+		"rank": 9,
+		"streams": 3976542
+	},
+	{
+		"week": "2025-03-08",
+		"track_name": "Stay",
+		"artist_names": "The Kid LAROI, Justin Bieber",
+		"rank": 1,
+		"streams": 5876543
+	},
+	{
+		"week": "2025-03-08",
+		"track_name": "Heat Waves",
+		"artist_names": "Glass Animals",
+		"rank": 4,
+		"streams": 4543219
+	},
+	{
+		"week": "2025-03-08",
+		"track_name": "Levitating",
+		"artist_names": "Dua Lipa",
+		"rank": 2,
+		"streams": 5321456
+	},
+	{
+		"week": "2025-03-08",
+		"track_name": "Good 4 U",
+		"artist_names": "Olivia Rodrigo",
+		"rank": 10,
+		"streams": 3421765
+	},
+
+	{
+		"week": "2025-03-15",
+		"track_name": "Blinding Lights",
+		"artist_names": "The Weeknd",
+		"rank": 6,
+		"streams": 4321567
+	},
+	{
+		"week": "2025-03-15",
+		"track_name": "Shape of You",
+		"artist_names": "Ed Sheeran",
+		"rank": 8,
+		"streams": 3987654
+	},
+	{
+		"week": "2025-03-15",
+		"track_name": "Someone You Loved",
+		"artist_names": "Lewis Capaldi",
+		"rank": 10,
+		"streams": 3712345
+	},
+	{
+		"week": "2025-03-15",
+		"track_name": "Dance Monkey",
+		"artist_names": "Tones and I",
+		"rank": 9,
+		"streams": 3865432
+	},
+	{
+		"week": "2025-03-15",
+		"track_name": "Starboy",
+		"artist_names": "The Weeknd",
+		"rank": 5,
+		"streams": 4523456
+	},
+	{
+		"week": "2025-03-15",
+		"track_name": "Bad Guy",
+		"artist_names": "Billie Eilish",
+		"rank": 7,
+		"streams": 4123456
+	},
+	{
+		"week": "2025-03-15",
+		"track_name": "Stay",
+		"artist_names": "The Kid LAROI, Justin Bieber",
+		"rank": 2,
+		"streams": 5432198
+	},
+	{
+		"week": "2025-03-15",
+		"track_name": "Heat Waves",
+		"artist_names": "Glass Animals",
+		"rank": 3,
+		"streams": 5123456
+	},
+	{
+		"week": "2025-03-15",
+		"track_name": "Levitating",
+		"artist_names": "Dua Lipa",
+		"rank": 1,
+		"streams": 5567890
+	},
+	{
+		"week": "2025-03-15",
+		"track_name": "Good 4 U",
+		"artist_names": "Olivia Rodrigo",
+		"rank": 4,
+		"streams": 4765432
+	},
+
+	{
+		"week": "2025-03-22",
+		"track_name": "Blinding Lights",
+		"artist_names": "The Weeknd",
+		"rank": 8,
+		"streams": 4021567
+	},
+	{
+		"week": "2025-03-22",
+		"track_name": "Shape of You",
+		"artist_names": "Ed Sheeran",
+		"rank": 9,
+		"streams": 3876541
+	},
+	{
+		"week": "2025-03-22",
+		"track_name": "Someone You Loved",
+		"artist_names": "Lewis Capaldi",
+		"rank": 10,
+		"streams": 3654321
+	},
+	{
+		"week": "2025-03-22",
+		"track_name": "Dance Monkey",
+		"artist_names": "Tones and I",
+		"rank": 7,
+		"streams": 4123456
+	},
+	{
+		"week": "2025-03-22",
+		"track_name": "Starboy",
+		"artist_names": "The Weeknd",
+		"rank": 6,
+		"streams": 4321098
+	},
+	{
+		"week": "2025-03-22",
+		"track_name": "Bad Guy",
+		"artist_names": "Billie Eilish",
+		"rank": 5,
+		"streams": 4543217
+	},
+	{
+		"week": "2025-03-22",
+		"track_name": "Stay",
+		"artist_names": "The Kid LAROI, Justin Bieber",
+		"rank": 1,
+		"streams": 5876543
+	},
+	{
+		"week": "2025-03-22",
+		"track_name": "Heat Waves",
+		"artist_names": "Glass Animals",
+		"rank": 3,
+		"streams": 5234567
+	},
+	{
+		"week": "2025-03-22",
+		"track_name": "Levitating",
+		"artist_names": "Dua Lipa",
+		"rank": 4,
+		"streams": 4987654
+	},
+	{
+		"week": "2025-03-22",
+		"track_name": "Good 4 U",
+		"artist_names": "Olivia Rodrigo",
+		"rank": 2,
+		"streams": 5432198
+	},
+
+	{
+		"week": "2025-03-29",
+		"track_name": "Blinding Lights",
+		"artist_names": "The Weeknd",
+		"rank": 9,
+		"streams": 3876543
+	},
+	{
+		"week": "2025-03-29",
+		"track_name": "Shape of You",
+		"artist_names": "Ed Sheeran",
+		"rank": 10,
+		"streams": 3654321
+	},
+	{
+		"week": "2025-03-29",
+		"track_name": "Someone You Loved",
+		"artist_names": "Lewis Capaldi",
+		"rank": 8,
+		"streams": 4123456
+	},
+	{
+		"week": "2025-03-29",
+		"track_name": "Dance Monkey",
+		"artist_names": "Tones and I",
+		"rank": 7,
+		"streams": 4234567
+	},
+	{
+		"week": "2025-03-29",
+		"track_name": "Starboy",
+		"artist_names": "The Weeknd",
+		"rank": 5,
+		"streams": 4654321
+	},
+	{
+		"week": "2025-03-29",
+		"track_name": "Bad Guy",
+		"artist_names": "Billie Eilish",
+		"rank": 6,
+		"streams": 4543219
+	},
+	{
+		"week": "2025-03-29",
+		"track_name": "Stay",
+		"artist_names": "The Kid LAROI, Justin Bieber",
+		"rank": 2,
+		"streams": 5765432
+	},
+	{
+		"week": "2025-03-29",
+		"track_name": "Heat Waves",
+		"artist_names": "Glass Animals",
+		"rank": 4,
+		"streams": 5123456
+	},
+	{
+		"week": "2025-03-29",
+		"track_name": "Levitating",
+		"artist_names": "Dua Lipa",
+		"rank": 3,
+		"streams": 5432109
+	},
+	{
+		"week": "2025-03-29",
+		"track_name": "Good 4 U",
+		"artist_names": "Olivia Rodrigo",
+		"rank": 1,
+		"streams": 5987654
+	},
+
+	{
+		"week": "2025-04-05",
+		"track_name": "Blinding Lights",
+		"artist_names": "The Weeknd",
+		"rank": 10,
+		"streams": 3654321
+	},
+	{
+		"week": "2025-04-05",
+		"track_name": "Shape of You",
+		"artist_names": "Ed Sheeran",
+		"rank": 9,
+		"streams": 3876543
+	},
+	{
+		"week": "2025-04-05",
+		"track_name": "Someone You Loved",
+		"artist_names": "Lewis Capaldi",
+		"rank": 7,
+		"streams": 4321098
+	},
+	{
+		"week": "2025-04-05",
+		"track_name": "Dance Monkey",
+		"artist_names": "Tones and I",
+		"rank": 8,
+		"streams": 4012345
+	},
+	{
+		"week": "2025-04-05",
+		"track_name": "Starboy",
+		"artist_names": "The Weeknd",
+		"rank": 5,
+		"streams": 4876543
+	},
+	{
+		"week": "2025-04-05",
+		"track_name": "Bad Guy",
+		"artist_names": "Billie Eilish",
+		"rank": 6,
+		"streams": 4543219
+	},
+	{
+		"week": "2025-04-05",
+		"track_name": "Stay",
+		"artist_names": "The Kid LAROI, Justin Bieber",
+		"rank": 4,
+		"streams": 5234567
+	},
+	{
+		"week": "2025-04-05",
+		"track_name": "Heat Waves",
+		"artist_names": "Glass Animals",
+		"rank": 3,
+		"streams": 5432198
+	},
+	{
+		"week": "2025-04-05",
+		"track_name": "Levitating",
+		"artist_names": "Dua Lipa",
+		"rank": 2,
+		"streams": 5654321
+	},
+	{
+		"week": "2025-04-05",
+		"track_name": "Good 4 U",
+		"artist_names": "Olivia Rodrigo",
+		"rank": 1,
+		"streams": 6123456
+	}
+]

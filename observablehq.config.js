@@ -6,15 +6,16 @@ export default {
 	// The pages and sections in the sidebar. If you don’t specify this option,
 	// all pages will be listed in alphabetical order. Listing pages explicitly
 	// lets you organize them into sections and have unlisted pages.
-	// pages: [
-	//   {
-	//     name: "Examples",
-	//     pages: [
-	//       {name: "Dashboard", path: "/example-dashboard"},
-	//       {name: "Report", path: "/example-report"}
-	//     ]
-	//   }
-	// ],
+	pages: [
+		{
+			name: "Examples",
+			pages: [
+				{ name: "Dashboard", path: "/example-dashboard" },
+				{ name: "Report", path: "/example-report" },
+				{ name: "Rankings", path: "/spotify-rankings" },
+			],
+		},
+	],
 
 	// Content to add to the head of the page, e.g. for a favicon:
 	head: '<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌎</text></svg>">',
@@ -23,7 +24,7 @@ export default {
 	root: "src",
 
 	// Some additional configuration options and their defaults:
-	theme: "slate", // try "light", "dark", "slate", etc.
+	theme: "midnight", // try "light", "dark", "slate", etc.
 	// header: "", // what to show in the header (HTML)
 	// footer: "Built with Observable.", // what to show in the footer (HTML)
 	// sidebar: true, // whether to show the sidebar

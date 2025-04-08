@@ -1,11 +1,38 @@
 ---
 toc: false
+sidebar: false
+author: "Iarla Sparrow Burke"
 ---
+```js
+// imports
+import * as d3 from "d3";
+import { bumpChart } from "./components/bumpChart.js";
+
+// our sample dataset. gottq switch it out
+const data = FileAttachment("./data/spotify_rankings_sample.json").json();
+```
 
 <div class="hero">
   <h1>Spotify Rankings</h1>
   <h2>This visualization shows how the top songs on Spotify change over the course of 2024. Each line represents a track, and the position shows its ranking in that specific week. The data was taken from <a href="https://www.kaggle.com/datasets/federicocester97/spotify-global-chart-2024">this dataset.</a></h2>
 </div>
+
+# Spotify Top Tracks Visualization
+
+This visualization shows how the top songs on Spotify change over the course of 2024. Each line represents a track, and the position shows its ranking in that specific week. The data was taken from [this dataset.](https://www.kaggle.com/datasets/federicocester97/spotify-global-chart-2024)
+
+```js
+display(
+	bumpChart(data, {
+		width: window.innerWidth - 200, // Adjust width to take up as much horizontal space as possible
+		height: 500,
+		margin: { left: 20, right: 20, top: 40, bottom: 80 }, // Reduce margins for better centering
+		trackCount: 10,
+		drawingStyle: "transit",
+		labelStyle: "right",
+	})
+);
+```
 
 ---
 
@@ -30,6 +57,10 @@ Here are some ideas of things you could try…
 
 <style>
 
+* {
+  --accent: #2D856B;
+}
+
 .hero {
   display: flex;
   flex-direction: column;
@@ -47,7 +78,7 @@ Here are some ideas of things you could try…
   font-size: 14vw;
   font-weight: 900;
   line-height: 1;
-  background: linear-gradient(30deg, var(--theme-foreground-focus), currentColor);
+  background: linear-gradient(30deg, #1ED760, currentColor);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -60,7 +91,7 @@ Here are some ideas of things you could try…
   font-style: initial;
   font-weight: 500;
   line-height: 1.5;
-  color: var(--theme-foreground-muted);
+  color: var(--accent);
 }
 
 @media (min-width: 640px) {

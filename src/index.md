@@ -25,6 +25,15 @@ console.log(data);
 This visualization shows how the top songs on Spotify change over the course of 2024. Each line represents a track, and the position shows its ranking in that specific week. The data was taken from [this dataset.](https://www.kaggle.com/datasets/federicocester97/spotify-global-chart-2024)
 
 ```js
+const selectedQuarter = view(
+	Inputs.radio([1, 2, 3, 4], {
+		label: "Select which quarter to view:",
+		value: 1,
+	})
+);
+```
+
+```js
 display(
 	(() => {
 		// Reference the selectedQuarter to establish dependency
@@ -33,7 +42,7 @@ display(
 		return bumpChart(data, {
 			width: window.innerWidth - 20,
 			height: 800,
-			margin: { left: 280, right: 0, top: 40, bottom: 80 },
+			margin: { left: 0, right: 0, top: 40, bottom: 80 },
 			trackCount: 20,
 			quarter: quarter, // Use the local variable
 			drawingStyle: "transit",
@@ -41,15 +50,43 @@ display(
 		});
 	})()
 );
-```
 
-```js
-const selectedQuarter = view(
-	Inputs.radio([1, 2, 3, 4], {
-		label: "Select which quarter to view:",
-		value: 1,
-	})
-);
+d3.text().then(function(datasetText) {
+  var rows  = d3.csvParseRows(datasetText),
+      table = d3.select('body').append('table')
+                .style("border-collapse", "collapse")
+                .style("border", "2px black solid");
+
+  // headers
+  table.append("thead").append("tr")
+    .selectAll("th")
+    .data(rows[0])
+    .enter().append("th")
+    .text(function(d) { return d; })
+    .style("border", "1px black solid")
+    .style("padding", "5px")
+    .style("background-color", "lightgray")
+    .style("font-weight", "bold")
+    .style("text-transform", "uppercase");
+
+  // data
+  table.append("tbody")
+    .selectAll("tr").data(rows.slice(1))
+    .enter().append("tr")
+    .selectAll("td")
+    .data(function(d){return d;})
+    .enter().append("td")
+    .style("border", "1px black solid")
+    .style("padding", "5px")
+    .on("mouseover", function(){
+    d3.select(this).style("background-color", "powderblue");
+  })
+    .on("mouseout", function(){
+    d3.select(this).style("background-color", "white");
+  })
+    .text(function(d){return d;})
+    .style("font-size", "12px");
+});
 ```
 
 ---

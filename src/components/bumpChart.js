@@ -1,360 +1,246 @@
 import * as d3 from "d3";
 
-// imput should take an array of objects with the following properties:
-// rank, uri, artist_names, track_name,
-// source, peak_rank, previous_rank,
-// weeks_on_chart, streams, week, quarter
-
 export function bumpChart(
-	data,
-	{
-		width = 900,
-		height = 600,
-		margin = { left: 180, right: 180, top: 40, bottom: 80 },
-		padding = 25,
-		bumpRadius = 6,
-		trackCount = 10,
-		selectedQuarter = 1,
-		drawingStyle = "default",
-		labelStyle = "right",
-		valueFormat = d3.format(",d"),
-	} = {}
+  data,
+  {
+    width = 900,
+    height = 600,
+    margin = { left: 280, right: 20, top: 40, bottom: 80 }, // Increased left and right margins
+    padding = 25,
+    bumpRadius = 6,
+    trackCount = 10,
+    quarter = 1,
+    valueFormat = d3.format(",d"),
+  } = {}
 ) {
-	// Filter data by the specified quarter
-	console.log(data);
-	const filteredData = data.filter((d) => d.quarter === selectedQuarter);
-	console.log("after filtering: ", filteredData);
+  // Filter data by quarter
+  const filteredData = data.filter((d) => d.quarter === quarter);
 
-	// Adjust margins based on labelStyle
-	const adjustedMargin = { ...margin };
-	if (labelStyle === "right") {
-		adjustedMargin.left = 0; // Reduced left margin when no left labels
-	} else if (labelStyle === "left") {
-		adjustedMargin.right = 50; // Reduced right margin when no right labels
-	}
+  // Get unique weeks and sort them
+  const weeks = [...new Set(filteredData.map((d) => d.week))].sort(
+    (a, b) => a - b
+  );
+  console.log("Weeks:", weeks);
+  const weekDates = weeks.map((w) => formatWeekDate(w));
+  console.log("Week dates:", weekDates);
 
-	// Process the data to track rankings over time
-	const weeks = [...new Set(filteredData.map((d) => d.week))].sort(
-		(a, b) => a - b
-	);
+  // Find top tracks based on best rank (simplest approach)
+  // For each week, get the top tracks that were in the chart that week
+  const tracksByWeek = new Map();
+  const allTopTracks = new Set();
+  const color = d3.scaleOrdinal(d3.schemeTableau10).domain(d3.range(trackCount));
 
-	// Get top tracks based on average rank or frequency in top positions
-	const topTracks = getTopTracks(filteredData, trackCount);
+  weeks.forEach(week => {
+    // Get data for this week and sort by rank
+    const weekData = filteredData.filter(d => d.week === week)
+      .sort((a, b) => a.rank - b.rank)
+      .slice(0, trackCount);
 
-	// Format data for chart
-	const chartData = formatDataForChart(filteredData, weeks, topTracks);
+    // Store the top tracks for this week
+    tracksByWeek.set(week, weekData);
 
-	// Set up scales and layout parameters
-	const seq = (start, length) => Array.from({ length }, (_, i) => i + start);
+    // Add all tracks to our master set
+    weekData.forEach(d => allTopTracks.add(d.track_name));
+  });
 
-	const ranking = getChartRanking(weeks, chartData, topTracks);
-	const left = ranking.sort((a, b) => a.first - b.first).map((d) => d.track);
-	const right = ranking.sort((a, b) => a.last - b.last).map((d) => d.track);
+  console.log(`Found ${allTopTracks.size} unique tracks across all weeks`);
 
-	// Create scales
-	const bx = d3
-		.scalePoint()
-		.domain(seq(0, weeks.length))
-		.range([
-			0,
-			width - adjustedMargin.left - adjustedMargin.right - padding * 2,
-		]);
+  // Create track data for all tracks that appeared in any week's top positions
+  const trackData = Array.from(allTopTracks).map(track => {
+    return {
+      track: track,
+      artist: getArtistForTrack(filteredData, track),
+      weeklyRanks: weeks.map(week => {
+        // Find this track's position in this week (if it was in the top tracks)
+        const weekTopTracks = tracksByWeek.get(week);
+        const match = weekTopTracks.find(d => d.track_name === track);
 
-	const by = d3
-		.scalePoint()
-		.domain(seq(0, trackCount))
-		.range([adjustedMargin.top, height - adjustedMargin.bottom - padding]);
+        return match
+          ? {
+            rank: match.rank - 1, // 0-indexed for display
+            streams: +match.streams,
+          }
+          : null; // Track wasn't in the top N this week
+      }),
+    };
+  });
 
-	const ax = d3
-		.scalePoint()
-		.domain(weeks.map(formatWeekDate))
-		.range([
-			adjustedMargin.left + padding,
-			width - adjustedMargin.right - padding,
-		]);
+  // Create line generator directly from the data
+  const bx = d3
+    .scalePoint()
+    .domain(weeks.map((_, i) => i))
+    .range([padding, width - margin.right - margin.left - padding]); // Adjusted range
 
-	const y = d3
-		.scalePoint()
-		.range([adjustedMargin.top, height - adjustedMargin.bottom - padding]);
+  const by = d3
+    .scalePoint()
+    .domain(d3.range(trackCount))
+    .range([margin.top, height - margin.bottom - padding]);
 
-	const colorScale = d3
-		.scaleOrdinal(d3.schemeTableau10)
-		.domain(seq(0, topTracks.length));
+  const line = d3
+    .line()
+    .x((d, i) => bx(i))
+    .y((d) => (d ? by(d.rank) : null))
+    .defined((d) => d !== null);
 
-	const strokeWidth = d3
-		.scaleOrdinal()
-		.domain(["default", "transit", "compact"])
-		.range([3, bumpRadius * 2, 2]);
+  // Create SVG
+  const svg = d3
+    .create("svg")
+    .attr("viewBox", [0, 0, width, height])
+    .attr("width", width)
+    .attr("height", height)
+    .attr("style", "max-width: 100%; height: auto; color: #fff;")
+    .attr("font-family", "system-ui, sans-serif");
 
-	// Create SVG
-	const svg = d3
-		.create("svg")
-		.attr("viewBox", [0, 0, width, height])
-		.attr("width", width)
-		.attr("height", height)
-		.attr("style", "max-width: 100%; height: auto; color: #fff;")
-		.attr("font-family", "system-ui, sans-serif");
+  // Add a group for the chart content, offset by margins
+  const chartGroup = svg
+    .append("g")
+    .attr("transform", `translate(${margin.left},0)`);
 
-	// Draw vertical week lines
-	svg.append("g")
-		.attr("transform", `translate(${adjustedMargin.left + padding},0)`)
-		.selectAll("path")
-		.data(seq(0, filteredData.filter((w) => w.rank === 1).length + 1)) // number of weeks in quarter + 1 for end line
-		.join("path")
-		.attr("stroke", "#ddd")
-		.attr("stroke-width", 1)
-		.attr("stroke-dasharray", "3,3")
-		.attr("d", (d) =>
-			d3.line()([
-				[bx(d), adjustedMargin.top - 10],
-				[bx(d), height - adjustedMargin.bottom],
-			])
-		);
+  // Draw vertical week lines inside the chart group
+  chartGroup
+    .append("g")
+    .selectAll("path")
+    .data(weeks)
+    .join("path")
+    .attr("stroke", "#ddd")
+    .attr("stroke-width", 1)
+    .attr("stroke-dasharray", "3,3")
+    .attr("d", (d, i) =>
+      d3.line()([
+        [bx(i), margin.top - 10],
+        [bx(i), height - margin.bottom],
+      ])
+    );
 
-	// Create variables to store axis refs for highlight/restore
-	let leftY, rightY;
+  // Draw bump lines inside the chart group
+  const series = chartGroup
+    .selectAll(".series")
+    .data(trackData)
+    .join("g")
+    .attr("class", "series")
+    .attr("opacity", 1)
+    .attr("fill", (d, i) => d3.schemeTableau10[i % 10])
+    .attr("stroke", (d, i) => d3.schemeTableau10[i % 10])
+    .on("mouseover", highlight)
+    .on("mouseout", restore);
 
-	// Draw bump lines
-	const series = svg
-		.selectAll(".series")
-		.data(chartData)
-		.join("g")
-		.attr("class", "series")
-		.attr("opacity", 1)
-		.attr("fill", (d, i) => colorScale(i))
-		.attr("stroke", (d, i) => colorScale(i))
-		.attr("transform", `translate(${adjustedMargin.left + padding},0)`)
-		.on("mouseover", function (event, d) {
-			// Highlight functionality
-			const element = d3.select(this);
-			element.raise();
+  series
+    .append("path")
+    .attr("fill", "none")
+    .attr("stroke-width", bumpRadius)
+    .attr("d", (d) => line(d.weeklyRanks));
 
-			series
-				.filter((s) => s !== d)
-				.transition()
-				.duration(500)
-				.attr("opacity", 0.2);
+  // Draw circles at each point
+  const bumps = series
+    .selectAll("g")
+    .data((d) =>
+      d.weeklyRanks
+        .map((v, i) => ({
+          track: d.track,
+          artist: d.artist,
+          streams: v ? v.streams : 0,
+          value: v,
+          weekIndex: i,
+        }))
+        .filter((d) => d.value !== null) // ⬅️ Only keep valid values
+    )
+    .join("g")
+    .attr(
+      "transform",
+      (d) => `translate(${bx(d.weekIndex)},${by(d.value.rank)})`
+    )
+    .call((g) =>
+      g
+        .append("title")
+        .text(
+          (d) =>
+            `${d.track} - ${d.artist}\nRank: ${d.value ? d.value.rank + 1 : "N/A"
+            }\nStreams: ${valueFormat(d.streams)}`
+        )
+    );
 
-			// Mark ticks
-			markTick(leftY, 0);
-			markTick(rightY, weeks.length - 1);
+  bumps.append("circle").attr("r", bumpRadius);
 
-			function markTick(axis, pos) {
-				axis.selectAll(".tick text")
-					.filter((s, i) => i === d[pos].rank)
-					.transition()
-					.duration(500)
-					.attr("font-weight", "bold")
-					.attr("fill", element.attr("fill"));
-			}
-		})
-		.on("mouseout", function () {
-			// Restore functionality
-			series.transition().duration(500).attr("opacity", 1);
+  // Add rank number in circles
+  bumps
+    .filter((d) => d.value)
+    .append("text")
+    .attr("dy", "0.35em")
+    .attr("fill", "white")
+    .attr("stroke", "none")
+    .attr("text-anchor", "middle")
+    .style("font-weight", "bold")
+    .style("font-size", "10px")
+    .text((d) => d.value.rank + 1);
 
-			// Restore ticks
-			restoreTicks(leftY);
-			restoreTicks(rightY);
+  // Draw axes
+  const drawAxis = (g, x, y, axis) => {
+    g.attr("transform", `translate(${x},${y})`)
+      .call(axis)
+      .call((g) => g.select(".domain").remove())
+      .selectAll(".tick text")
+      .attr("font-size", "10px");
+  };
 
-			function restoreTicks(axis) {
-				axis.selectAll(".tick text")
-					.transition()
-					.duration(500)
-					.attr("font-weight", "normal")
-					.attr("fill", "white");
-			}
-		});
+  // Bottom axis (weeks)
+  svg.append("g")
+    .call((g) =>
+      drawAxis(
+        g,
+        margin.left, // Start from left margin
+        height - margin.bottom + padding,
+        d3.axisBottom(bx.domain(weekDates)).tickSizeOuter(0)
+      )
+    )
+    .selectAll("text")
+    .style("text-anchor", "end")
+    .attr("dx", "-.8em")
+    .attr("dy", ".15em")
+    .attr("transform", "rotate(-45)");
 
-	// Draw lines connecting points
-	series
-		.selectAll("path")
-		.data((d) => d)
-		.join("path")
-		.attr("stroke-width", strokeWidth(drawingStyle))
-		.attr("d", (d, i) => {
-			if (d.next)
-				return d3.line()([
-					[bx(i), by(d.rank)],
-					[bx(i + 1), by(d.next.rank)],
-				]);
-		});
+  function highlight(_, d) {
+    // Move current element to front for better visibility
+    this.parentNode.appendChild(this);
 
-	// Draw circles at each point
-	const bumps = series
-		.selectAll("g")
-		.data((d, i) =>
-			d.map((v) => ({
-				track: topTracks[i],
-				artist: v.artist,
-				streams: v.streams,
-				value: v,
-				first: d[0].rank,
-			}))
-		)
-		.join("g")
-		.attr("transform", (d, i) => `translate(${bx(i)},${by(d.value.rank)})`)
-		.call((g) =>
-			g
-				.append("title")
-				.text(
-					(d) =>
-						`${d.track} - ${d.artist}\nRank: ${
-							d.value.rank + 1
-						}\nStreams: ${valueFormat(d.streams)}`
-				)
-		);
+    // Grey out all other tracks
+    series.filter(s => s !== d)
+      .transition().duration(500)
+      .attr("opacity", 0.3);
 
-	const compact = drawingStyle === "compact";
-	bumps.append("circle").attr("r", compact ? 4 : bumpRadius);
+    // Keep the hovered track at full opacity with original color
+    d3.select(this)
+      .transition().duration(500)
+      .attr("opacity", 1);
+  }
 
-	// Add rank number in circles
-	if (!compact) {
-		bumps
-			.append("text")
-			.attr("dy", "0.35em")
-			.attr("fill", "white")
-			.attr("stroke", "none")
-			.attr("text-anchor", "middle")
-			.style("font-weight", "bold")
-			.style("font-size", "10px")
-			.text((d) => d.value.rank + 1);
-	}
+  function restore() {
+    // Restore all tracks to their original appearance
+    series.transition().duration(500)
+      .attr("opacity", 1);
+  }
 
-	// Draw axes
-	const drawAxis = (g, x, y, axis, domain) => {
-		g.attr("transform", `translate(${x},${y})`)
-			.call(axis)
-			.call((g) => g.select(".domain").remove())
-			.selectAll(".tick text")
-			.attr("font-size", "10px");
-	};
-
-	// Bottom axis (weeks)
-	svg.append("g")
-		.call((g) =>
-			drawAxis(
-				g,
-				0,
-				height - adjustedMargin.top - adjustedMargin.bottom + padding,
-				d3.axisBottom(ax).tickSizeOuter(0),
-				true
-			)
-		)
-		.selectAll("text")
-		.style("text-anchor", "end")
-		.attr("dx", "-.8em")
-		.attr("dy", ".15em")
-		.attr("transform", "rotate(-45)");
-
-	// Left axis (initial ranks))
-	if (labelStyle === "left" || labelStyle === "both") {
-		leftY = svg.append("g").call((g) =>
-			drawAxis(
-				g,
-				adjustedMargin.left,
-				0,
-				d3
-					.axisLeft(y.domain(left))
-					.tickFormat(
-						(d) => `${d} - ${getArtistForTrack(filteredData, d)}`
-					),
-				false
-			)
-		);
-	}
-
-	// Right axis (final ranks)
-	if (labelStyle === "right" || labelStyle === "both") {
-		rightY = svg.append("g").call((g) =>
-			drawAxis(
-				g,
-				width - adjustedMargin.right,
-				0,
-				d3
-					.axisRight(y.domain(right))
-					.tickFormat(
-						(d) => `${d} - ${getArtistForTrack(filteredData, d)}`
-					),
-				false
-			)
-		);
-	}
-
-	return svg.node();
+  return svg.node();
 }
+
+
 
 // Format date for display
 function formatWeekDate(dateStr) {
-	const date = new Date(dateStr);
-	return date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+  const [day, month, year] = dateStr.split("/").map(Number);
+  const date = new Date(year, month - 1, day); // Month is 0-indexed in JavaScript
+  if (isNaN(date)) {
+    console.error(`Invalid date format: ${dateStr}`);
+    return "Invalid Date";
+  }
+  return date.toLocaleDateString("en-US");
 }
 
 // Get artist name for a track
 function getArtistForTrack(data, trackName) {
-	const trackData = data.find((d) => d.track_name === trackName);
-	if (!trackData) return "";
+  const trackData = data.find((d) => d.track_name === trackName);
+  if (!trackData) return "";
 
-	// Shorten artist name if too long
-	const artist = trackData.artist_names;
-	return artist.length > 20 ? artist.substring(0, 18) + "..." : artist;
-}
-
-// Extract top N tracks by overall performance
-function getTopTracks(data, n = 10) {
-	// Group by track name and calculate a score based on ranks
-	// (lower rank = higher score since ranks are 1-200)
-	const trackScores = d3.rollup(
-		data,
-		(v) => d3.sum(v, (d) => 201 - d.rank),
-		(d) => d.track_name
-	);
-
-	// Sort by score and take top N tracks
-	return Array.from(trackScores.entries())
-		.sort((a, b) => b[1] - a[1])
-		.slice(0, n)
-		.map((d) => d[0]);
-}
-
-// Format data for the bump chart
-function formatDataForChart(data, weeks, tracks) {
-	// Create a nested structure of track -> week -> rank
-	const trackData = tracks.map((track) => {
-		const trackPoints = weeks
-			.map((week, i) => {
-				// Find data for this track in the current week
-				const point = data.find(
-					(d) => d.track_name === track && d.week === week
-				);
-
-				if (!point) return null;
-
-				return {
-					rank: point ? point.rank - 1 : null, // Make ranks 0-indexed
-					week: week,
-					artist: point ? point.artist_names : "",
-					streams: point ? +point.streams : 0,
-					next: null, // Will connect points in next step
-				};
-			})
-			.filter((p) => p !== null);
-
-		// Connect points with next references
-		for (let i = 0; i < trackPoints.length - 1; i++) {
-			trackPoints[i].next = trackPoints[i + 1];
-		}
-
-		return trackPoints;
-	});
-
-	return trackData.filter((track) => track.length > 0);
-}
-
-// Calculate rankings for chart axis labels
-function getChartRanking(weeks, chartData, tracks) {
-	return chartData.map((d, i) => ({
-		track: tracks[i],
-		first: d[0]?.rank || 0,
-		last: d[d.length - 1]?.rank || 0,
-	}));
+  // Shorten artist name if too long
+  const artist = trackData.artist_names;
+  return artist.length > 20 ? artist.substring(0, 18) + "..." : artist;
 }

@@ -24,6 +24,8 @@ console.log(data);
 
 This visualization shows how the top songs on Spotify change over the course of 2024. Each line represents a track, and the position shows its ranking in that specific week. The data was taken from [this dataset.](https://www.kaggle.com/datasets/federicocester97/spotify-global-chart-2024)
 
+You can set the number of tracks and quarter shown with the controls below. To open a song, simply click on one its nodes - this will open the song in Spotify.
+
 ```js
 const selectedQuarter = view(
 	Inputs.radio([1, 2, 3, 4], {
@@ -31,6 +33,7 @@ const selectedQuarter = view(
 		value: 1,
 	})
 );
+const numOfTracks = view(Inputs.select([5, 10, 15, 20, 25, 30], {value: 15, label: "Number of tracks to show: "}));
 ```
 
 ```js
@@ -38,12 +41,13 @@ display(
 	(() => {
 		// Reference the selectedQuarter to establish dependency
 		const quarter = selectedQuarter;
+    const trackCount = numOfTracks;
 
 		return bumpChart(data, {
 			width: window.innerWidth - 20,
 			height: 800,
 			margin: { left: 0, right: 0, top: 40, bottom: 80 },
-			trackCount: 20,
+			trackCount: trackCount,
 			quarter: quarter, // Use the local variable
 			drawingStyle: "transit",
 			labelStyle: "left",

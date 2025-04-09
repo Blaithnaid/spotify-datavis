@@ -91,6 +91,20 @@ export function bumpChart(
     .attr("style", "max-width: 100%; height: auto; color: #fff;")
     .attr("font-family", "system-ui, sans-serif");
 
+  // Create tooltip div
+  const tooltip = d3.select("body")
+    .append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("visibility", "hidden")
+    .style("background", "rgba(0, 0, 0, 0.85)")
+    .style("color", "white")
+    .style("border-radius", "4px")
+    .style("padding", "10px")
+    .style("font-size", "12px")
+    .style("pointer-events", "none")
+    .style("z-index", "100");
+
   // Add a group for the chart content, offset by margins
   const chartGroup = svg
     .append("g")
@@ -141,6 +155,7 @@ export function bumpChart(
           streams: v ? v.streams : 0,
           value: v,
           weekIndex: i,
+          url: getTrackUrl(filteredData, d.track) // Get Spotify URL
         }))
         .filter((d) => d.value !== null) // ⬅️ Only keep valid values
     )
@@ -149,15 +164,34 @@ export function bumpChart(
       "transform",
       (d) => `translate(${bx(d.weekIndex)},${by(d.value.rank)})`
     )
-    .call((g) =>
-      g
-        .append("title")
-        .text(
-          (d) =>
-            `${d.track} - ${d.artist}\nRank: ${d.value ? d.value.rank + 1 : "N/A"
-            }\nStreams: ${valueFormat(d.streams)}`
-        )
-    );
+    .style("cursor", "pointer") // Change cursor to pointer on hover
+    .on("mouseover", function (event, d) {
+      // Show detailed tooltip
+      tooltip
+        .style("visibility", "visible")
+        .html(`
+          <div>
+            <strong>${d.track}</strong><br>
+            <span>${d.artist}</span><br>
+            Rank: ${d.value ? d.value.rank + 1 : "N/A"}<br>
+            Streams: ${valueFormat(d.streams)}
+          </div>
+        `);
+    })
+    .on("mousemove", function (event) {
+      tooltip
+        .style("top", (event.pageY - 10) + "px")
+        .style("left", (event.pageX + 10) + "px");
+    })
+    .on("mouseout", function () {
+      tooltip.style("visibility", "hidden");
+    })
+    .on("click", function (event, d) {
+      // Open Spotify URL in a new tab
+      if (d.url && d.url !== "#") {
+        window.open(d.url, "_blank");
+      }
+    });
 
   bumps.append("circle").attr("r", bumpRadius);
 
@@ -219,7 +253,12 @@ export function bumpChart(
       .attr("opacity", 1);
   }
 
-  return svg.node();
+  return Object.assign(svg.node(), {
+    remove() {
+      svg.remove();
+      tooltip.remove();
+    }
+  });
 }
 
 
@@ -233,6 +272,12 @@ function formatWeekDate(dateStr) {
     return "Invalid Date";
   }
   return date.toLocaleDateString("en-US");
+}
+
+// Get Spotify URL for a track
+function getTrackUrl(data, trackName) {
+  const trackData = data.find((d) => d.track_name === trackName);
+  return trackData?.url || "#";
 }
 
 // Get artist name for a track

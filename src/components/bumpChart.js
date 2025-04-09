@@ -7,7 +7,7 @@ export function bumpChart(
     height = 600,
     margin = { left: 280, right: 20, top: 40, bottom: 80 }, // Increased left and right margins
     padding = 25,
-    bumpRadius = 6,
+    bumpRadius = 12,
     trackCount = 10,
     quarter = 1,
     valueFormat = d3.format(",d"),
@@ -24,11 +24,9 @@ export function bumpChart(
   const weekDates = weeks.map((w) => formatWeekDate(w));
   console.log("Week dates:", weekDates);
 
-  // Find top tracks based on best rank (simplest approach)
   // For each week, get the top tracks that were in the chart that week
   const tracksByWeek = new Map();
   const allTopTracks = new Set();
-  const color = d3.scaleOrdinal(d3.schemeTableau10).domain(d3.range(trackCount));
 
   weeks.forEach(week => {
     // Get data for this week and sort by rank
@@ -174,7 +172,8 @@ export function bumpChart(
             <strong>${d.track}</strong><br>
             <span>${d.artist}</span><br>
             Rank: ${d.value ? d.value.rank + 1 : "N/A"}<br>
-            Streams: ${valueFormat(d.streams)}
+            Streams: ${valueFormat(d.streams)}<br>
+            <span style="color:#1ED760; font-size: 9px">Click to open</span>
           </div>
         `);
     })

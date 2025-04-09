@@ -17,14 +17,14 @@ console.log(data);
 
 <div class="hero">
   <h1>Spotify Rankings</h1>
-  <h2>This visualization shows how the top songs on Spotify change over the course of 2024. Each line represents a track, and the position shows its ranking in that specific week. The data was taken from <a href="https://www.kaggle.com/datasets/federicocester97/spotify-global-chart-2024">this dataset.</a></h2>
+  <h2>This visualization shows how the top songs on Spotify change over the course of 2024. Each line represents a track, and the position shows its ranking in that specific week. The data was taken from <a style="color: #18B44F;" href="https://www.kaggle.com/datasets/federicocester97/spotify-global-chart-2024">this dataset.</a></h2>
 </div>
 
 # The Chart
 
-This visualization shows how the top songs on Spotify change over the course of 2024. Each line represents a track, and the position shows its ranking in that specific week. The data was taken from [this dataset.](https://www.kaggle.com/datasets/federicocester97/spotify-global-chart-2024)
+*You can set the number of tracks and quarter shown with the controls below.*
 
-You can set the number of tracks and quarter shown with the controls below. To open a song, simply click on one its nodes - this will open the song in Spotify.
+*To open a song on Spotify, simply click on one its nodes*
 
 ```js
 const selectedQuarter = view(
@@ -151,6 +151,10 @@ Here are some ideas of things you could try…
   font-weight: 500;
   line-height: 1.5;
   color: #999;
+}
+
+a {
+  color: #1ED760;
 }
 
 @media (min-width: 640px) {

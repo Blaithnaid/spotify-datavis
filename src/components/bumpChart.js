@@ -34,7 +34,9 @@ export function bumpChart(
 	}
 
 	// Process the data to track rankings over time
-	const weeks = [...new Set(filteredData.map((d) => d.week))].sort();
+	const weeks = [...new Set(filteredData.map((d) => d.week))].sort(
+		(a, b) => a - b
+	);
 
 	// Get top tracks based on average rank or frequency in top positions
 	const topTracks = getTopTracks(filteredData, trackCount);

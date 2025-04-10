@@ -63,6 +63,13 @@ export function bumpChart(
     };
   });
 
+  const colorScale = d3.scaleOrdinal()
+    .domain(Array.from(allTopTracks))
+    .range(d3.quantize(
+      t => d3.interpolateRainbow(t * 3), // Use only 80% of the spectrum for better spread
+      allTopTracks.size > 10 ? allTopTracks.size : 10
+    ));
+
   // Create line generator directly from the data
   const bx = d3
     .scalePoint()
@@ -131,8 +138,8 @@ export function bumpChart(
     .join("g")
     .attr("class", "series")
     .attr("opacity", 1)
-    .attr("fill", (d, i) => d3.schemeTableau10[i % 10])
-    .attr("stroke", (d, i) => d3.schemeTableau10[i % 10])
+    .attr("fill", (d) => colorScale(d.track))
+    .attr("stroke", (d) => colorScale(d.track))
     .on("mouseover", highlight)
     .on("mouseout", restore);
 

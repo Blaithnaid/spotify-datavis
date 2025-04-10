@@ -22,6 +22,8 @@ console.log(data);
 
 # The Chart
 
+For the sake of visual clarity, only 1 quarter of the year can be viewed at a time.
+
 *You can set the number of tracks and quarter shown with the controls below.*
 
 *To open a song on Spotify, simply click on one its nodes*
@@ -55,64 +57,43 @@ display(
 	})()
 );
 
-d3.text().then(function(datasetText) {
-  var rows  = d3.csvParseRows(datasetText),
-      table = d3.select('body').append('table')
-                .style("border-collapse", "collapse")
-                .style("border", "2px black solid");
+// Generate tables for top X songs at the end of each quarter
+const quarters = [1, 2, 3, 4];
+quarters.forEach((quarter) => {
+  const quarterData = data.filter(d => d.quarter === quarter)
+                          .sort((a, b) => a.rank - b.rank)
+                          .slice(0, numOfTracks);
 
-  // headers
+  const table = d3.select('body').append('table')
+    .attr("class", `quarter-table quarter-${quarter}`)
+    .style("border-collapse", "collapse")
+    .style("border", "2px black solid")
+    .style("margin", "20px 0");
+
+  // Table header
   table.append("thead").append("tr")
     .selectAll("th")
-    .data(rows[0])
+    .data(["Rank", "Track", "Artist"])
     .enter().append("th")
-    .text(function(d) { return d; })
-    .style("border", "1px black solid")
+    .text(d => d)
+    .style("border", "1px lightgray solid")
     .style("padding", "5px")
-    .style("background-color", "lightgray")
+    .style("background-color", "dimgray")
     .style("font-weight", "bold")
     .style("text-transform", "uppercase");
 
-  // data
-  table.append("tbody")
-    .selectAll("tr").data(rows.slice(1))
-    .enter().append("tr")
-    .selectAll("td")
-    .data(function(d){return d;})
-    .enter().append("td")
-    .style("border", "1px black solid")
-    .style("padding", "5px")
-    .on("mouseover", function(){
-    d3.select(this).style("background-color", "powderblue");
-  })
-    .on("mouseout", function(){
-    d3.select(this).style("background-color", "white");
-  })
-    .text(function(d){return d;})
-    .style("font-size", "12px");
+  // Table rows
+  const tbody = table.append("tbody");
+  quarterData.forEach(row => {
+    const tr = tbody.append("tr");
+    tr.append("td").text(row.rank).style("border", "1px lightgray solid").style("padding", "5px");
+    tr.append("td").text(row.track).style("border", "1px lightgray solid").style("padding", "5px");
+    tr.append("td").text(row.artist).style("border", "1px lightgray solid").style("padding", "5px");
+  });
 });
 ```
 
 ---
-
-## Next steps
-
-Here are some ideas of things you could try…
-
-<div class="grid grid-cols-4">
-  <div class="card">
-    Chart your own data using <a href="https://observablehq.com/framework/lib/plot"><code>Plot</code></a> and <a href="https://observablehq.com/framework/files"><code>FileAttachment</code></a>. Make it responsive using <a href="https://observablehq.com/framework/javascript#resize(render)"><code>resize</code></a>.
-  </div>
-  <div class="card">
-    Create a <a href="https://observablehq.com/framework/project-structure">new page</a> by adding a Markdown file (<code>whatever.md</code>) to the <code>src</code> folder.
-  </div>
-  <div class="card">
-    Add a drop-down menu using <a href="https://observablehq.com/framework/inputs/select"><code>Inputs.select</code></a> and use it to filter the data shown in a chart.
-  </div>
-  <div class="card">
-    Import a <a href="https://observablehq.com/framework/imports">recommended library</a> from npm, such as <a href="https://observablehq.com/framework/lib/leaflet">Leaflet</a>, <a href="https://observablehq.com/framework/lib/dot">GraphViz</a>, <a href="https://observablehq.com/framework/lib/tex">TeX</a>, or <a href="https://observablehq.com/framework/lib/duckdb">DuckDB</a>.
-  </div>
-</div>
 
 <style>
 

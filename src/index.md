@@ -24,9 +24,9 @@ console.log(data);
 
 For the sake of visual clarity, only 1 quarter of the year can be viewed at a time.
 
-*You can set the number of tracks and quarter shown with the controls below.*
+*You can set the number of tracks and quarter shown with the controls below.
 
-*To open a song on Spotify, simply click on one its nodes*
+*To open a song on Spotify, simply click on one of its nodes.*
 
 ```js
 const selectedQuarter = view(
@@ -35,7 +35,7 @@ const selectedQuarter = view(
 		value: 1,
 	})
 );
-const numOfTracks = view(Inputs.select([5, 10, 15, 20, 25, 30], {value: 15, label: "Number of tracks to show: "}));
+const numOfTracks = view(Inputs.select([5, 10, 15, 20, 25, 30, 35, 40, 45, 50], {value: 15, label: "Number of tracks to show: "}));
 ```
 
 ```js

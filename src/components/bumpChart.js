@@ -7,7 +7,6 @@ export function bumpChart(
     height = 600,
     margin = { left: 280, right: 20, top: 40, bottom: 80 }, // Increased left and right margins
     padding = 25,
-    bumpRadius = 12,
     trackCount = 10,
     quarter = 1,
     valueFormat = d3.format(",d"),
@@ -40,6 +39,18 @@ export function bumpChart(
     // Add all tracks to our master set
     weekData.forEach(d => allTopTracks.add(d.track_name));
   });
+
+  // set bumpRadius programmatically based on the number of positions we're showing
+  let bumpRadius = 24;
+  if (trackCount >= 40) {
+    bumpRadius = 6;
+  } else if (trackCount >= 25) {
+    bumpRadius = 8;
+  } else if (trackCount >= 15) {
+    bumpRadius = 12;
+  } else if (trackCount >= 10) {
+    bumpRadius = 16
+  }
 
   console.log(`Found ${allTopTracks.size} unique tracks across all weeks`);
 
@@ -277,7 +288,7 @@ function formatWeekDate(dateStr) {
     console.error(`Invalid date format: ${dateStr}`);
     return "Invalid Date";
   }
-  return date.toLocaleDateString("en-US");
+  return date.toLocaleDateString("en-US", { month: "long", day: "numeric" });
 }
 
 // Get Spotify URL for a track
